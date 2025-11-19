@@ -74,6 +74,7 @@ For training purposes, the utilization of the following commands is advised if y
 cd PyDiff/
 CUDA_VISIBLE_DEVICES=0,1 python -m torch.distributed.launch --nproc_per_node=2 --master_port=22666 pydiff/train.py -opt options/train_v1.yaml --launcher pytorch
 ```
+You can isolate experiment artifacts per writer by setting `writer_name` in your YAML (e.g. `writer_name: alice`) or overriding it via `--writer_name alice`, which saves results to `experiments/<exp_name>/<writer_name>` and keeps TensorBoard logs under `tb_logger/<exp_name>/<writer_name>`.
 
 ### Training with a single GPU 
 

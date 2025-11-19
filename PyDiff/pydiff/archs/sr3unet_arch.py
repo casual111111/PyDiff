@@ -273,7 +273,7 @@ class SR3UNet(nn.Module):
 
     def forward(self, x, time=None):
         if self.channel_randperm_input:
-            from scripts.pytorch_utils import channel_randperm
+            # from scripts.pytorch_utils import channel_randperm
             x[:, :6, ...] = channel_randperm(x[:, :6, ...])
         if self.drop2d_input:
             x[:, :6, ...] = self.drop2d_in(x[:, :6, ...])

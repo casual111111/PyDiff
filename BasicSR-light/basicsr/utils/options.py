@@ -88,6 +88,11 @@ def parse_options(root_path, is_train=True):
     parser.add_argument('--local_rank', type=int, default=0)
     parser.add_argument(
         '--force_yml', nargs='+', default=None, help='Force to update yml files. Examples: train:ema_decay=0.999')
+    parser.add_argument(
+        '--writer_name',
+        type=str,
+        default=None,
+        help='Sub-folder name under experiments/<exp_name> for saving outputs.')
     args = parser.parse_args()
 
     # parse yml to dict
@@ -127,6 +132,10 @@ def parse_options(root_path, is_train=True):
             # using exec function
             exec(eval_str)
 
+    opt['writer_name'] = args.writer_name or opt.get('writer_name')
+    if opt['writer_name'] is not None:
+        opt['writer_name'] = str(opt['writer_name'])
+
     opt['auto_resume'] = args.auto_resume
     opt['is_train'] = is_train
 
@@ -156,6 +165,8 @@ def parse_options(root_path, is_train=True):
 
     if is_train:
         experiments_root = osp.join(*osp.split(root_path)[:-1], 'experiments', opt['name'])
+        if opt.get('writer_name'):
+            experiments_root = osp.join(experiments_root, opt['writer_name'])
         opt['path']['experiments_root'] = experiments_root
         opt['path']['models'] = osp.join(experiments_root, 'models')
         opt['path']['training_states'] = osp.join(experiments_root, 'training_states')

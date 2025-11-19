@@ -1,5 +1,6 @@
 # general settings
 name: train_v1
+writer_name: default_writer
 model_type: PyDiffModel
 num_gpu: 2
 manual_seed: 0
@@ -9,8 +10,8 @@ datasets:
   train:
     name: train
     type: LOL_Dataset
-    gt_root: "../dataset/LOLdataset/our485/high"
-    input_root: "../dataset/LOLdataset/our485/low"
+    gt_root: "/root/autodl-tmp/dataset/LLLR/LOL/lol_dataset/our485/high"
+    input_root: "/root/autodl-tmp/dataset/LLLR/LOL/lol_dataset/our485/low"
     input_mode: ~
     concat_with_position_encoding: true
     concat_with_hiseq: true
@@ -24,8 +25,8 @@ datasets:
 
     # data loader
     use_shuffle: true
-    num_worker_per_gpu: 8
-    batch_size_per_gpu: 8
+    num_worker_per_gpu: 4
+    batch_size_per_gpu: 4
     dataset_enlarge_ratio: 1
     prefetch_mode: ~
 
@@ -34,8 +35,8 @@ datasets:
     # Or comment the val block if do not need validation during training
     name: validation
     type: LOL_Dataset
-    gt_root: "../dataset/LOLdataset/eval15/high"
-    input_root: "../dataset/LOLdataset/eval15/low"
+    gt_root: "/root/autodl-tmp/dataset/LLLR/LOL/lol_dataset/eval15/high"
+    input_root: "/root/autodl-tmp/dataset/LLLR/LOL/lol_dataset/eval15/low"
     concat_with_hiseq: true
     input_mode: pad
     divide: 32

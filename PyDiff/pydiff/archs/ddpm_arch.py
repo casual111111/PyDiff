@@ -577,10 +577,10 @@ class GaussianDiffusion(nn.Module):
         x_start = x_HR
         [b, c, h, w] = x_start.shape
 
-        noise = default(noise, lambda: torch.randn_like(x_start))
+        noise = default(noise, lambda: torch.randn_like(x_start))#随机噪声
         x_noisy = self.q_sample(
             x_start=x_start, continuous_sqrt_alpha_cumprod=continuous_sqrt_alpha_cumprod.view(-1, 1, 1, 1), noise=noise)
-
+#HR，信号保留率，噪声(前向加噪过程)
         if frozen_denoise:
             with torch.no_grad():
                 if not self.conditional:

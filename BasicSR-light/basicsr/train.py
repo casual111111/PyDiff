@@ -14,6 +14,11 @@ from basicsr.utils import (AvgTimer, MessageLogger, check_resume, get_env_info, 
 from basicsr.utils.options import copy_opt_file, dict2str, parse_options
 import os
 
+def _get_writer_suffix(opt):
+    writer_name = opt.get('writer_name')
+    return writer_name if writer_name else None
+
+
 def init_tb_loggers(opt):
     # initialize wandb logger before tensorboard logger to allow proper sync
     if (opt['logger'].get('wandb') is not None) and (opt['logger']['wandb'].get('project')
@@ -22,7 +27,11 @@ def init_tb_loggers(opt):
         init_wandb_logger(opt)
     tb_logger = None
     if opt['logger'].get('use_tb_logger') and 'debug' not in opt['name']:
-        tb_logger = init_tb_logger(log_dir=osp.join(opt['root_path'], 'tb_logger', opt['name']))
+        log_dir = osp.join(opt['root_path'], 'tb_logger', opt['name'])
+        writer_suffix = _get_writer_suffix(opt)
+        if writer_suffix:
+            log_dir = osp.join(log_dir, writer_suffix)
+        tb_logger = init_tb_logger(log_dir=log_dir)
     return tb_logger
 
 
@@ -68,7 +77,7 @@ def create_train_val_dataloader(opt, logger):
 def load_resume_state(opt):
     resume_state_path = None
     if opt['auto_resume']:
-        state_path = osp.join('experiments', opt['name'], 'training_states')
+        state_path = opt['path']['training_states']
         if osp.isdir(state_path):
             states = list(scandir(state_path, suffix='state', recursive=False, full_path=False))
             if len(states) != 0:
@@ -102,7 +111,11 @@ def train_pipeline(root_path):
     if resume_state is None:
         make_exp_dirs(opt)
         if opt['logger'].get('use_tb_logger') and 'debug' not in opt['name'] and opt['rank'] == 0:
-            mkdir_and_rename(osp.join(opt['root_path'], 'tb_logger', opt['name']))
+            tb_root = osp.join(opt['root_path'], 'tb_logger', opt['name'])
+            writer_suffix = _get_writer_suffix(opt)
+            if writer_suffix:
+                tb_root = osp.join(tb_root, writer_suffix)
+            mkdir_and_rename(tb_root)
 
     # copy the yml file to the experiment root
     copy_opt_file(args.opt, opt['path']['experiments_root'])
