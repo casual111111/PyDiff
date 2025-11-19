@@ -164,9 +164,12 @@ def parse_options(root_path, is_train=True):
             opt['path'][key] = osp.expanduser(val)
 
     if is_train:
-        experiments_root = osp.join(*osp.split(root_path)[:-1], 'experiments', opt['name'])
-        if opt.get('writer_name'):
-            experiments_root = osp.join(experiments_root, opt['writer_name'])
+        base_exp_root = osp.join(root_path, 'experiments')
+        writer_name = opt.get('writer_name')
+        if writer_name:
+            experiments_root = osp.join(base_exp_root, writer_name)
+        else:
+            experiments_root = osp.join(base_exp_root, opt['name'])
         opt['path']['experiments_root'] = experiments_root
         opt['path']['models'] = osp.join(experiments_root, 'models')
         opt['path']['training_states'] = osp.join(experiments_root, 'training_states')

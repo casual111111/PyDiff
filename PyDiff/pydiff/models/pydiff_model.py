@@ -41,6 +41,8 @@ class PyDiffModel(BaseModel):
         self.global_corrector = self.model_to_device(self.global_corrector)
         opt['network_ddpm']['color_fn'] = self.global_corrector
 
+        
+
         self.ddpm = build_network(opt['network_ddpm'])
         self.ddpm = self.model_to_device(self.ddpm)
         if isinstance(self.ddpm, (DataParallel, DistributedDataParallel)):
